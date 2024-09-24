@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Word Predictor</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Next Word Predictor</h1>
+
+        <div class="form-group">
+            <label for="inputText">Type your sentence:</label>
+            <input type="text" class="form-control" id="inputText" placeholder="Start typing..." autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="nextWord">Next predicted word:</label>
+            <input type="text" class="form-control" id="nextWord" readonly>
+        </div>
+    </div>
+
+    <!-- JavaScript to send request on input change -->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#inputText').on('input', function(){
+                var text = $(this).val();
+                if (text.length > 0) {
+                    // Make AJAX call to Flask API to predict next word
+                    $.ajax({
+                        url: '/predict',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ text: text }),
+                        success: function(response) {
+                            // Show the predicted next word in the nextWord box
+                            $('#nextWord').val(response.next_word);
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+                } else {
+                    $('#nextWord').val(''); // Clear the next word box if input is empty
+                }
+            });
+        });
+    </script>
+</body>
+</html>
